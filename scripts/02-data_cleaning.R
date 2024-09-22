@@ -1,44 +1,57 @@
 #### Preamble ####
-# Purpose: Cleans the raw plane data recorded by two observers..... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 6 April 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Cleans the raw Toronto Tickets Issued data for analysis.
+# Author: Cristina Su Lam
+# Date: 21 September 2024
+# Contact: cristina.sulam@utoronto.ca 
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: run 01-download_data.R
+# Any other information needed? None
 
 #### Workspace setup ####
 library(tidyverse)
+library(janitor)
+
 
 #### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
 
-cleaned_data <-
-  raw_data |>
+# Preview of Data
+head(raw_tickets_data)
+tail(raw_tickets_data)
+
+# This process involves standardizing and dropping unnecessary column names,
+# renaming specific ticket types for consistency, and filtering the dataset 
+# to include only offence years from 2019 to 2023.
+cleaned_tickets_data <- raw_tickets_data |>
   janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
-  mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
-  ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
-         ) |> 
-  tidyr::drop_na()
+  # Drop unnecessary columns
+  select(-`x_id`, -`hood_158`, -`neighbourhood_158`) |>
+  # Rename ticket type
+  mutate(ticket_type = ifelse(ticket_type == "Prov Offence Summons Part Iii Form 104", 
+                              "Prov Offence Summons Part III Form 104", 
+                              ticket_type)) |>
+  # Filter for offence years 2019 to 2023
+  filter(offence_year %in% 2019:2023)
+
+# Check for missing values
+missing_values <- cleaned_tickets_data |> 
+  summarise(across(everything(), ~ sum(is.na(.))))
+
+# Check data types
+str(cleaned_tickets_data)
+
+# Inspect the cleaned data
+print(cleaned_tickets_data)
 
 #### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+write_csv(cleaned_tickets_data, "data/analysis_data/cleaned_tickets_data.csv")
+
+
+
+
+
+
+
+
+
+
+
