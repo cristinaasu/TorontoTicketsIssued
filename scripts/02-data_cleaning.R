@@ -36,6 +36,18 @@ cleaned_tickets_data <- raw_tickets_data |>
 missing_values <- cleaned_tickets_data |> 
   summarise(across(everything(), ~ sum(is.na(.))))
 
+# Display missing values
+print(missing_values)
+
+# Convert character variables to factors for analysis
+cleaned_tickets_data <- cleaned_tickets_data |> 
+  mutate(
+    division = factor(division),
+    ticket_type = factor(ticket_type),
+    offence_category = factor(offence_category),
+    age_group = factor(age_group)
+  )
+
 # Check data types
 str(cleaned_tickets_data)
 
