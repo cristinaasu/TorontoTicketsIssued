@@ -11,51 +11,123 @@
 library(tidyverse)
 library(janitor)
 
+#### Clean Tickets Issued Data ####
 
-#### Clean data ####
-
-# Preview of Data
+# Preview of Tickets Issued Data
 head(raw_tickets_data)
 tail(raw_tickets_data)
 
-# This process involves standardizing and dropping unnecessary column names,
-# renaming specific ticket types for consistency, and filtering the dataset 
-# to include only offence years from 2019 to 2023.
-cleaned_tickets_data <- raw_tickets_data |>
-  janitor::clean_names() |>
-  # Drop unnecessary columns
-  select(-`x_id`, -`hood_158`, -`neighbourhood_158`) |>
-  # Rename ticket type
+# Clean and preprocess the tickets data
+cleaned_tickets_data <- raw_tickets_data |>  
+  janitor::clean_names() |>  # Standardize column names
+  select(-x_id, -hood_158, -neighbourhood_158) |>  # Drop unnecessary columns
   mutate(ticket_type = ifelse(ticket_type == "Prov Offence Summons Part Iii Form 104", 
                               "Prov Offence Summons Part III Form 104", 
-                              ticket_type)) |>
-  # Filter for offence years 2019 to 2023
-  filter(offence_year %in% 2019:2023)
+                              ticket_type)) |>  # Rename ticket type
+  filter(offence_year %in% 2018:2023) |>  # Filter for offence years 2019 to 2023
+  rename(`Ticket Count` = ticket_count,
+         `Offence Year` = offence_year,
+         `Division` = division,
+         `Ticket Type` = ticket_type,
+         `Offence Category` = offence_category,
+         `Age Group` = age_group) |>  # Rename variables
+  arrange(`Offence Year`)  # Arrange by offence year
 
 # Check for missing values
-missing_values <- cleaned_tickets_data |> 
-  summarise(across(everything(), ~ sum(is.na(.))))
+missing_values <- cleaned_tickets_data |>   
+  summarise(across(everything(), ~ sum(is.na(.))))  # Count missing values
 
-# Display missing values
+# Display missing values and data types
 print(missing_values)
-
-# Convert character variables to factors for analysis
-cleaned_tickets_data <- cleaned_tickets_data |> 
-  mutate(
-    division = factor(division),
-    ticket_type = factor(ticket_type),
-    offence_category = factor(offence_category),
-    age_group = factor(age_group)
-  )
-
-# Check data types
 str(cleaned_tickets_data)
-
-# Inspect the cleaned data
 print(cleaned_tickets_data)
+
+#### Clean Division Data ####
+
+# Preview of Division Data 
+head(raw_division_data)
+tail(raw_division_data)
+
+# Standardize column names in division data
+raw_division_data <- janitor::clean_names(raw_division_data) 
+
+# Check the original row count
+original_count <- nrow(raw_division_data)
+
+# Remove duplicate rows and check the new row count
+new_division_data <- raw_division_data |> 
+  distinct()
+
+new_count <- nrow(new_division_data)
+
+# Print results for duplicate removal
+cat("Original count of rows:", original_count, "\n")
+cat("New count of rows after removing duplicates:", new_count, "\n")
+
+# Check if any rows were removed
+if (original_count > new_count) {
+  cat("Number of rows removed:", original_count - new_count, "\n")
+} else {
+  cat("No rows were removed.\n")
+}
+
+# Clean and preprocess raw_division_data
+cleaned_division_data <- new_division_data |>  
+  select(div, area_sqkm, geometry) |>  # Drop unneeded columns
+  rename(Division = div, Area = area_sqkm, Geometry = geometry) |>  # Rename for consistency
+  arrange(Division)  # Optionally arrange by division name
+
+# Inspect cleaned division data
+print(cleaned_division_data)
+
+#### Save Data ####
+write_csv(cleaned_tickets_data, "data/analysis_data/cleaned_tickets_data.csv")
+write_csv(cleaned_division_data, "data/analysis_data/cleaned_division_data.csv")
+
+
+# Preview of Division Data 
+head(raw_division_data)
+tail(raw_division_data)
+
+# Standardize columns
+raw_division_data <- janitor::clean_names(raw_division_data)
+raw_division_data 
+
+# Check the original row count
+original_count <- nrow(raw_division_data)
+
+# Check for duplicates
+raw_division_data <- raw_division_data |> distinct()
+
+# Check the new row count
+new_count <- nrow(raw_division_data)
+
+# Print the results
+cat("Original count of rows:", original_count, "\n")
+cat("New count of rows after removing duplicates:", new_count, "\n")
+
+# Check if any rows were removed
+if (original_count > new_count) {
+  cat("Number of rows removed:", original_count - new_count, "\n")
+} else {
+  cat("No rows were removed.\n")
+}
+
+
+# Clean and preprocess raw_division_data
+cleaned_division_data <- raw_division_data |> 
+  janitor::clean_names() |>  # Standardize column names
+  distinct() |>              # Remove duplicate rows
+  select(div, area_sqkm, geometry) |>  # Drop unneeded columns
+  rename(Division = div, Area = area_sqkm, Geometry = geometry) |>  # Rename for consistency
+  arrange(Division)  # Optionally arrange by division name
+
+# Inspect cleaned data
+print(cleaned_division_data)
 
 #### Save data ####
 write_csv(cleaned_tickets_data, "data/analysis_data/cleaned_tickets_data.csv")
+write_csv(cleaned_division_data, "data/analysis_data/cleaned_division_data.csv")
 
 
 
