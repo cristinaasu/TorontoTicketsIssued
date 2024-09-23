@@ -22,9 +22,8 @@ raw_tickets_data <- list_package_resources("police-annual-statistical-report-tic
 
 # Get Toronto Division Data
 raw_division_data <- list_package_resources("police-boundaries") |>
-  filter(name == "Police Boundaries Data - 4326.csv") |>
+  filter(name == "Police Boundaries Data - 4326.geojson") |>
   get_resource()
-
 
 #### Save data ####
 write_csv(raw_tickets_data, "data/raw_data/raw_tickets_data.csv") 
