@@ -20,7 +20,7 @@ num_obs <- 500
 
 simulated_data <- 
   tibble(
-    year = sample(2019:2023, num_obs, replace = TRUE),
+    year = sample(2018:2023, num_obs, replace = TRUE),
     ticket_type = sample(c("Prov Offence Notice - Part I (Pot)", 
                            "Prov Offence Summons Part III Form 104"), 
                          num_obs, replace = TRUE),
