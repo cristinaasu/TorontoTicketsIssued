@@ -11,7 +11,7 @@
 #### Workspace setup ####
 library(opendatatoronto)
 library(tidyverse)
-
+library(dplyr)
 
 #### Download data ####
 
@@ -20,9 +20,15 @@ raw_tickets_data <- list_package_resources("police-annual-statistical-report-tic
   filter(name == "Tickets Issued.csv") |>
   get_resource()
 
+# Get Toronto Division Data
+raw_division_data <- list_package_resources("police-boundaries") |>
+  filter(name == "Police Boundaries Data - 4326.csv") |>
+  get_resource()
+
 
 #### Save data ####
 write_csv(raw_tickets_data, "data/raw_data/raw_tickets_data.csv") 
+write_csv(raw_division_data, "data/raw_data/raw_division_data.csv") 
 
 
 
