@@ -21,7 +21,9 @@ library(scales)
 library(sf)             
 library(ggmap)           
 library(viridis)         
-library(grid)            
+library(grid)  
+library(gt)
+
 ```
 
 # Introduction
@@ -49,7 +51,8 @@ cleaned_tickets_data <- read_csv(
 )
 
 
-NROW(cleaned_tickets_data )
+# Read GeoJSON data correctly
+cleaned_division_data <- st_read(here("data/analysis_data/cleaned_division_data.geojson"))
 ```
 
 To explore patterns of ticket issuance in Toronto from 2018 to 2023, comprehensive data were acquired from the Toronto Open Data catalogue using the OpenDataToronto R package (Gelfand 2022). This dataset is continually updated, with the latest records up to August 2nd, 2024, ensuring relevance and accuracy for this analysis.
@@ -59,8 +62,6 @@ The initial dataset comprised various entries which included data points categor
 The statistical analysis was conducted using the R programming language, utilizing its powerful tidyverse suite (Wickham et al., 2019) for data manipulation and ggplot2 for visualization (Wickham, 2016). The key focus was to ascertain the distribution and variability of ticket issuance across different years and analyze demographic trends.
 
 The cleaned dataset revealed a total of 1,145,119 tickets issued over the six-year period, averaging 190,853.2 tickets per year. The standard deviation of 14,082.49 highlighted a notable variation in the number of tickets issued annually, suggesting influences of external factors or changes in enforcement intensity. This variability warranted a deeper exploration to understand annual trends and their implications on urban management and policy enforcement strategies.
-
-Glimpse of Dataset
 
 ```{r}
 #| label: tbl-ticketissuedata
@@ -79,10 +80,8 @@ cleaned_tickets_data |>
                   "Offence Category", "Age Group", "Ticket Count"), 
     booktabs = TRUE 
   )
-
 ```
 
-Basic Summary Statistic Table for Ticket Count
 
 ```{r}
 #| label: tbl-meansdtickets
@@ -232,7 +231,10 @@ Examining the influence of policy changes, economic factors, or even public even
 #| echo: false
 #| warning: false
 #| fig-align: center
-# Assuming ticket_counts has been prepared as shown before
+ticket_counts <- cleaned_tickets_data %>%
+  group_by(`Offence Category`, `Offence Year`) %>%
+  summarize(`Ticket Count` = sum(`Ticket Count`), .groups = 'drop')
+
 # Convert your data into a wider format
 ticket_counts_wide <- ticket_counts %>%
   pivot_wider(names_from = `Offence Year`, values_from = `Ticket Count`, values_fill = list(`Ticket Count` = 0))
@@ -291,13 +293,13 @@ tickets_summary <- cleaned_tickets_data %>%
   summarise(total_tickets = sum(`Ticket Count`, na.rm = TRUE)) 
 
 # 2. Merge the summarized tickets data with the GeoJSON division data 
-division_with_tickets <- division_data %>% 
-  left_join(tickets_summary, by = c("DIV" = "Division")) 
+division_with_tickets <- cleaned_division_data %>% 
+  left_join(tickets_summary, by = c("Division" = "Division")) 
 
 # 3. Plot the map with custom colors 
 ggplot(data = division_with_tickets) + 
   geom_sf(aes(fill = total_tickets), color = "black") +   
-  geom_sf_text(aes(label = paste0(DIV, "\n", scales::comma(total_tickets))),   # Add commas here
+  geom_sf_text(aes(label = paste0(Division, "\n", scales::comma(total_tickets))),   # Add commas here
                size = 2, color = "black") +  
   scale_fill_gradientn(colors = c("#FFCCCB", "#FFDDC1", "#FFE4B5", "#D3FFCE", "#B2E0E0"),
                        labels = scales::comma) +  
@@ -334,21 +336,6 @@ This paper offers a foundational exploration into the patterns of ticket issuanc
 
 This expanded discussion provides a thorough analysis of your data, ensuring each section of the paper is robustly supported by the visualizations and the underlying data you've provided.
 
-```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
-#| warning: false
-
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
-```
 
 
 \newpage
