@@ -4,7 +4,7 @@ author: Cristina Su Lam
 thanks: "Code and data supporting this analysis is available at: https://github.com/cristinaasu/TorontoTicketsIssued"
 date: today
 date-format: long
-abstract: "This paper analyzes Toronto’s ticket issuance data from 2018 to 2023 to uncover patterns in traffic enforcement across various offense categories and demographic groups. The analysis reveals that certain offense types, such as [X] and [Y], consistently result in higher ticket counts, with significant geographic concentrations in specific city divisions. Trends in ticket issuance by age group and year also show fluctuations, with noticeable increases in enforcement activity during certain periods. These findings offer valuable insights for guiding targeted law enforcement policies and improving the allocation of resources across the city."
+abstract: "This paper analyzes Toronto’s ticket issuance data from 2018 to 2023 to uncover patterns in traffic enforcement across various offense categories and demographic groups. The analysis reveals that certain offense types (fix this), consistently result in higher ticket counts, with significant geographic concentrations in specific city divisions. Trends in ticket issuance by age group and year also show fluctuations, with noticeable increases in enforcement activity during certain periods. These findings offer valuable insights for guiding targeted law enforcement policies and improving the allocation of resources across the city."
 format: pdf
 number-sections: true
 bibliography: references.bib
