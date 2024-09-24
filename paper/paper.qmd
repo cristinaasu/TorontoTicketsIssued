@@ -1,10 +1,8 @@
 ---
 title: "My title"
 subtitle: "My subtitle if needed"
-author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+author: Cristina Su Lam
+thanks: "Code and data supporting this analysis is available at: https://github.com/cristinaasu/TorontoTicketsIssued"
 date: today
 date-format: long
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
@@ -17,11 +15,15 @@ bibliography: references.bib
 #| include: false
 #| warning: false
 #| message: false
-
-library(tidyverse)
-library(palmerpenguins)
+library(tidyverse)       
+library(kableExtra)      
+library(here)            
+library(scales)         
+library(sf)             
+library(ggmap)           
+library(viridis)         
+library(grid)            
 ```
-
 
 # Introduction
 
@@ -29,79 +31,210 @@ You can and should cross-reference sections and sub-sections. We use @citeR and 
 
 The remainder of this paper is structured as follows. @sec-data....
 
-
-
 # Data {#sec-data}
 
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
-
 ```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
+#| include: false
+#| message: false
 #| echo: false
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+# Read Cleaned Dataset
+cleaned_tickets_data <- read_csv(
+  file = here("data/analysis_data/cleaned_tickets_data.csv"),
+  show_col_types = FALSE
+)
 ```
 
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
+Glimpse of Dataset
 
 ```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
+#| label: tbl-ticketissuedata
+#| tbl-cap: Sample of Toronto Tickets Issued Data
 #| echo: false
 #| warning: false
-#| message: false
+#| fig-align: center
 
-analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
+# Ref from: 
+# https://github.com/ThomasWilliamFox/toronto_child_care/blob/master/outputs/paper/toronto_child_care.qmd
 
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
+head(cleaned_tickets_data, 6) |>
+  kable(
+    col.names = c("Ticket Count", " Offence Year", "Ticket Type", 
+                  "Offence Category", "Age Group", "Division"),
+    booktabs = TRUE
+  )
 ```
 
-Talk way more about it. 
+Basic Summary Statistic Table for Ticket Count
+
+```{r}
+#| label: tbl-meansdtickets
+#| tbl-cap: Mean and standard deviation of Ticket Count
+#| echo: false
+#| warning: false
+#| fig-align: center
+
+cleaned_tickets_data |>
+  summarize(
+    mean_ticket_count = sprintf("%.2f", mean(`Ticket Count`)),
+    sd_ticket_count = sprintf("%.2f", sd(`Ticket Count`))
+    ) |>
+  kable(
+    col.names = c("Mean Ticket Count", "SD of Ticket Count")
+    )
+```
+
+Tickets Type vs Tickets Issued
+
+```{r}
+#| label: tbl-ticketcatg
+#| tbl-cap: Frequency of Ticket Categories
+#| echo: false
+#| warning: false
+#| fig-align: center
+# Bar chart of ticket categories and their frequencies
+cleaned_tickets_data |> 
+  ggplot(aes(x = `Ticket Type`)) +
+  geom_bar(fill = "steelblue") + 
+  theme_minimal() +
+  labs(x = "Offence Category",
+       y = "Count of Tickets") +
+  theme(axis.text.x = element_text(hjust = 1))
+```
+
+Offence Category vs Tickets Issued
+
+```{r}
+#| label: tbl-offencebyticket
+#| tbl-cap: Stacked Bar Chart of Offence Categories by Ticket Type
+#| echo: false
+#| warning: false
+#| fig-align: center
+# Stacked bar chart of Offence Category and Tickets Issued
+cleaned_tickets_data |> 
+  ggplot(aes(x = `Offence Category`, fill = `Ticket Type`)) + 
+  geom_bar(position = "stack") + 
+  theme_minimal() + 
+  labs(x = "Count of Tickets", 
+       y = "Offence Category", 
+       fill = "Ticket Type") + 
+  coord_flip() +  # Flip the axes for a horizontal layout
+  theme(axis.text.y = element_text(angle = 0, hjust = 1))  
+```
+
+Ticket Counts by Ticket Type (Doughnut Chart)
+
+```{r}
+#| label: tbl-ticketcount
+#| tbl-cap: Distribution of Tickets by Type
+#| echo: false
+#| warning: false
+#| fig-align: center
+# Summarize the ticket counts by ticket type
+ticket_type_summary <- cleaned_tickets_data |> 
+  group_by(`Ticket Type`) |> 
+  summarise(Total_Tickets = sum(`Ticket Count`)) |> 
+  ungroup() |> 
+  mutate(Percentage = Total_Tickets / sum(Total_Tickets) * 100)
+
+# Create the doughnut chart
+ggplot(ticket_type_summary, aes(x = 2, y = Total_Tickets, fill = `Ticket Type`)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar("y", start = 0) +  
+  theme_void() +  
+  geom_text(aes(label = paste0(Total_Tickets, " (", round(Percentage, 1), "%)")),
+            position = position_stack(vjust = 0.5), color = "black") + 
+  scale_fill_brewer(palette = "Set3") + 
+  xlim(0.5, 2.5)  
+```
+
+Age Group vs Tickets Issued
+```{r}
+#| label: tbl-age
+#| tbl-cap: Stacked Bar Chart of Offence Categories by Age Group
+#| echo: false
+#| warning: false
+#| fig-align: center
+cleaned_tickets_data |> 
+  ggplot(aes(x = `Offence Category`, fill = `Age Group`)) + 
+  geom_bar(position = "stack") + 
+  theme_minimal() + 
+  labs(x = "Count of Tickets", 
+       y = "Offence Category", 
+       fill = "Age Group") + 
+  coord_flip() +  # Flip the axes for a horizontal layout
+  theme(axis.text.y = element_text(angle = 0, hjust = 1)) 
+```
 
 
+Annual Patterns
+```{r}
+#| label: tbl-yearlyp
+#| tbl-cap: Ticket Counts by Offence Category and Year
+#| echo: false
+#| warning: false
+#| fig-align: center
+# Summarizing data to get ticket counts by offence category and year
+ticket_counts <- cleaned_tickets_data %>%
+  group_by(`Offence Category`, `Offence Year`) %>%
+  summarize(`Ticket Count` = sum(`Ticket Count`), .groups = 'drop')
 
-# Model
+# Creating the line graph
+ticket_counts |> 
+  ggplot(aes(x = `Offence Category`, y = `Ticket Count`,
+             color = as.factor(`Offence Year`), 
+             group = `Offence Year`, linetype = as.factor(`Offence Year`))) + 
+  geom_line(size = 1.2) +  # Increase line width
+  geom_point(size = 3) +   # Optional: Adjust point size
+  theme_minimal() + 
+  labs(x = "Offence Category", 
+       y = "Ticket Count", 
+       color = "Year", 
+       linetype = "Year") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  
+```
 
-The goal of our modelling strategy is twofold. Firstly,...
+Geographic Map divided by divisions and shows #tickets issued per division
 
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
+```{r}
+#| label: tbl-map
+#| tbl-cap: Total Tickets Issued by Division
+#| echo: false
+#| warning: false
+#| fig-align: center
+# 1. Summarize ticket data by division
+tickets_summary <- cleaned_tickets_data %>%
+  group_by(Division) %>%
+  summarise(total_tickets = sum(`Ticket Count`, na.rm = TRUE))
 
-## Model set-up
+# 2. Merge the summarized tickets data with the GeoJSON division data
+division_with_tickets <- division_data %>%
+  left_join(tickets_summary, by = c("DIV" = "Division"))
 
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
-
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
+# 3. Plot the map with custom colors
+ggplot(data = division_with_tickets) +
+  geom_sf(aes(fill = total_tickets), color = "black") +  
+  geom_sf_text(aes(label = paste0(DIV, "\n", total_tickets)),  
+               size = 2, color = "black") + 
+  scale_fill_gradientn(colors = c("#FFCCCB", "#FFDDC1", "#FFE4B5", "#D3FFCE", "#B2E0E0"),
+                       labels = scales::comma) + 
+  labs(fill = "Total Tickets") +  
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(hjust = 0.5), 
+    axis.title = element_blank(),             
+    axis.text.x = element_blank(),            
+    axis.text.y = element_blank(),            
+    axis.ticks = element_blank(),              
+    panel.grid.major = element_blank(),       
+    panel.grid.minor = element_blank()         
+  ) +
+  # Add rectangle around the entire plot (map, title, and legend)
+  annotation_custom(
+    grob = rectGrob(gp = gpar(fill = NA, col = "black", lwd = 1)),
+    xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf
+  )
+```
 
 # Results
 
@@ -135,14 +268,11 @@ modelsummary::modelsummary(
 )
 ```
 
-
-
-
 # Discussion
 
 ## First discussion point {#sec-first-point}
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this.
 
 ## Second discussion point
 
@@ -156,8 +286,7 @@ Weaknesses and next steps should also be included.
 
 \appendix
 
-# Appendix {-}
-
+# Appendix {.unnumbered}
 
 # Additional data details
 
@@ -167,7 +296,7 @@ Weaknesses and next steps should also be included.
 
 In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
 
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
+In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows...
 
 ```{r}
 #| eval: true
@@ -190,32 +319,6 @@ posterior_vs_prior(first_model) +
   coord_flip()
 ```
 
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
-```
-
-
-
-\newpage
 
 
 # References
-
-
