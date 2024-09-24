@@ -32,7 +32,7 @@ simulated_data <-
                         "D23", "D52", "D32", "D12", 
                         "D55", "D51", "D33", "D14", "D13"), num_obs, 
                       replace = TRUE),
-    delay = sample(0:47, num_obs, replace = TRUE)
+    ticket_count = sample(1:150, num_obs, replace = TRUE) 
   )
 
 
@@ -71,4 +71,33 @@ ggplot(plot_data, aes(x = offence_category, y = ticket_count,
        color = "Year") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#### Test Simulated Data ####
+
+# Test 1: Ensure there are no missing values
+stopifnot(!any(is.na(simulated_data)))
+
+# Test 2: Check the range of years (should be between 2018 and 2023)
+stopifnot(all(simulated_data$year >= 2018 & simulated_data$year <= 2023))
+
+# Test 3: Ensure ticket_type contains the expected categories
+expected_ticket_types <- c("Prov Offence Notice - Part I (Pot)", "Prov Offence Summons Part III Form 104")
+stopifnot(all(simulated_data$ticket_type %in% expected_ticket_types))
+
+# Test 4: Check for duplicates 
+stopifnot(nrow(simulated_data) == nrow(distinct(simulated_data)))
+
+# Test 5: Ensure all age groups are correct ("Adult", "Young", "Unknown")
+expected_age_groups <- c("Adult", "Young", "Unknown")
+stopifnot(all(simulated_data$age_group %in% expected_age_groups))
+
+# Test 6: Ensure all offence categories are correct
+expected_offence_categories <- c("Distracted Driving", "Other HTA", "All CAIA", "Aggressive Driving", "Speeding")
+stopifnot(all(simulated_data$offence_category %in% expected_offence_categories))
+
+# Test 7: Ensure all divisions are in the expected range
+expected_divisions <- c("NSA", "D42", "D22", "D11", "D41", "D53", "D31", "D43", 
+                        "D23", "D52", "D32", "D12", "D55", "D51", "D33", "D14", "D13")
+stopifnot(all(simulated_data$division %in% expected_divisions))
+
 
