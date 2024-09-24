@@ -85,7 +85,7 @@ cleaned_tickets_data |>
 
 ```{r}
 #| label: tbl-meansdtickets
-#| tbl-cap: Mean and standard deviation of Ticket Count
+#| tbl-cap: Summary Statistics for Ticket Issuance in Toronto from 2018-2023
 #| echo: false
 #| warning: false
 #| fig-align: center
@@ -109,7 +109,7 @@ std_dev_yearly_tickets <- cleaned_tickets_data %>%
 
 # Create summary table with formatted values
 summary_table <- data.frame(
-  Statistic = c("Total Tickets Issued", 
+  `Summary Statistic` = c("Total Tickets Issued", 
                 "Mean Tickets Issued per Year", 
                 "Standard Deviation of Yearly Tickets Issued"),
   Value = c(format(total_tickets, big.mark = ",", scientific = FALSE), 
@@ -118,7 +118,7 @@ summary_table <- data.frame(
 )
 
 # Print the summary table using kable
-kable(summary_table, format = "pipe", caption = "Summary Statistics for Ticket Issuance in Toronto from 2018-2023")
+kable(summary_table, format = "pipe")
 
 ```
 
@@ -286,6 +286,7 @@ Further analysis could correlate high ticket areas with external factors such as
 #| tbl-cap: Total Tickets Issued by Division
 #| echo: false
 #| warning: false
+#| message: false
 #| fig-align: center
 # 1. Summarize ticket data by division 
 tickets_summary <- cleaned_tickets_data %>% 
