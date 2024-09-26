@@ -531,8 +531,6 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2018,D41,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,1
 2018,D41,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2018,D22,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
-2018,D13,Prov Offence Summons Part III Form 104,All CAIA,Unknown,1
-2018,D22,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,2
 2018,D14,Prov Offence Notice - Part I (Pot),Distracted Driving,Youth,2
 2018,D43,Prov Offence Notice - Part I (Pot),Distracted Driving,Youth,2
 2018,D43,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
@@ -547,7 +545,6 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2018,D41,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2018,D14,Prov Offence Summons Part III Form 104,Speeding,Youth,2
 2018,D31,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
-2018,D42,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,1
 2018,D53,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2018,D12,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2018,D11,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
@@ -3190,8 +3187,6 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2019,D33,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2019,D51,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2019,D42,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
-2019,D32,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,1
-2019,D55,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,2
 2019,D32,Prov Offence Notice - Part I (Pot),Distracted Driving,Youth,2
 2019,D14,Prov Offence Notice - Part I (Pot),Distracted Driving,Youth,2
 2019,D14,Prov Offence Notice - Part I (Pot),Distracted Driving,Youth,2
@@ -3206,7 +3201,6 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2019,D33,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2019,D55,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2019,D41,Prov Offence Summons Part III Form 104,All CAIA,Youth,2
-2019,D42,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,1
 2019,D31,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2019,D43,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2019,D32,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
@@ -5773,9 +5767,6 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2020,D41,Prov Offence Summons Part III Form 104,All CAIA,Youth,2
 2020,D53,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,1
 2020,D53,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
-2020,D14,Prov Offence Notice - Part I (Pot),All CAIA,Unknown,1
-2020,D31,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,2
-2020,D14,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,2
 2020,D11,Prov Offence Notice - Part I (Pot),Distracted Driving,Youth,2
 2020,D42,Prov Offence Notice - Part I (Pot),Distracted Driving,Youth,2
 2020,D42,Prov Offence Summons Part III Form 104,Speeding,Youth,2
@@ -5970,7 +5961,6 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2020,D32,Prov Offence Notice - Part I (Pot),Speeding,Youth,3
 2020,D23,Prov Offence Notice - Part I (Pot),Speeding,Youth,3
 2020,D22,Prov Offence Notice - Part I (Pot),Speeding,Youth,3
-2020,D14,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,3
 2020,D33,Prov Offence Summons Part III Form 104,Speeding,Youth,4
 2020,D42,Prov Offence Notice - Part I (Pot),All CAIA,Youth,4
 2020,D43,Prov Offence Notice - Part I (Pot),Speeding,Youth,4
@@ -8433,22 +8423,17 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2021,D22,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2021,D53,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2021,D22,Prov Offence Summons Part III Form 104,All CAIA,Youth,2
-2021,D14,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,1
 2021,D22,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
-2021,D41,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,1
-2021,D14,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,2
 2021,D33,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2021,D32,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2021,D42,Prov Offence Summons Part III Form 104,Speeding,Youth,2
 2021,D51,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,1
 2021,D41,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2021,D42,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
-2021,D51,Prov Offence Notice - Part I (Pot),Aggressive Driving,Unknown,1
 2021,D41,Prov Offence Summons Part III Form 104,Speeding,Youth,2
 2021,D51,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2021,D22,Prov Offence Summons Part III Form 104,Speeding,Youth,2
 2021,D43,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
-2021,D14,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,1
 2021,D22,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2021,D55,Prov Offence Summons Part III Form 104,Aggressive Driving,Youth,2
 2021,D51,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,2
@@ -8581,7 +8566,6 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2021,D43,Prov Offence Notice - Part I (Pot),Speeding,Youth,4
 2021,D12,Prov Offence Summons Part III Form 104,Other HTA,Youth,4
 2021,D12,Prov Offence Summons Part III Form 104,Other HTA,Youth,4
-2021,D42,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,3
 2021,D55,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,4
 2021,D41,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,4
 2021,D42,Prov Offence Notice - Part I (Pot),All CAIA,Youth,4
@@ -10994,8 +10978,6 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2022,D43,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,1
 2022,D13,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2022,D12,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,1
-2022,D42,Prov Offence Notice - Part I (Pot),All CAIA,Unknown,1
-2022,D42,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,2
 2022,D32,Prov Offence Notice - Part I (Pot),Distracted Driving,Youth,2
 2022,D12,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,1
 2022,D11,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
@@ -11005,13 +10987,10 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2022,D14,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2022,D41,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2022,D55,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,1
-2022,D32,Prov Offence Notice - Part I (Pot),All CAIA,Unknown,1
 2022,D43,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2022,D23,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2022,D41,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
-2022,D42,Prov Offence Notice - Part I (Pot),Aggressive Driving,Unknown,1
 2022,D41,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
-2022,D42,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,1
 2022,D43,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2022,D22,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2022,D14,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,2
@@ -11153,7 +11132,6 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2022,D33,Prov Offence Summons Part III Form 104,Other HTA,Youth,4
 2022,D32,Prov Offence Notice - Part I (Pot),Distracted Driving,Youth,3
 2022,D41,Prov Offence Notice - Part I (Pot),Speeding,Youth,3
-2022,D42,Prov Offence Notice - Part I (Pot),Speeding,Unknown,3
 2022,D55,Prov Offence Notice - Part I (Pot),Speeding,Youth,4
 2022,D43,Prov Offence Notice - Part I (Pot),Speeding,Youth,3
 2022,D41,Prov Offence Notice - Part I (Pot),Speeding,Youth,3
@@ -13521,14 +13499,11 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2023,D43,Prov Offence Summons Part III Form 104,All CAIA,Youth,2
 2023,D14,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2023,D41,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
-2023,D43,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,1
 2023,D55,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2023,D41,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
-2023,D14,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,1
 2023,D22,Prov Offence Summons Part III Form 104,All CAIA,Youth,2
 2023,D42,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2023,D53,Prov Offence Summons Part III Form 104,Speeding,Youth,2
-2023,D52,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,1
 2023,D43,Prov Offence Notice - Part I (Pot),Distracted Driving,Youth,2
 2023,D55,Prov Offence Notice - Part I (Pot),Distracted Driving,Youth,2
 2023,D32,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
@@ -13549,7 +13524,6 @@ Offence Year,Division,Ticket Type,Offence Category,Age Group,Ticket Count
 2023,D22,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2023,D42,Prov Offence Notice - Part I (Pot),All CAIA,Youth,2
 2023,D22,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
-2023,D41,Prov Offence Notice - Part I (Pot),Other HTA,Unknown,1
 2023,D31,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,2
 2023,D43,Prov Offence Notice - Part I (Pot),Speeding,Youth,2
 2023,D51,Prov Offence Notice - Part I (Pot),Aggressive Driving,Youth,2
