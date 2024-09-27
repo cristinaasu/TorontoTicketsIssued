@@ -26,4 +26,4 @@ Here is a quick guide to reproducing my graphs and tables.
 
 ## LLM Usage
 
-An LLM, in particular Chat-GPT4.0, was used to aid in the writing of this paper. In particular, it was primarily used to aid with the coding aspect of the paper as opposed to the actual writing. The entire chat history can be found in other/llm/usage.txt.
+An LLM, in particular Chat-GPT4.0, was used to aid in the writing of this paper. In particular, it was primarily used to aid with the coding aspect of the paper and helped with refining some part of the writing. The entire chat history can be found in other/llm/usage.txt.
