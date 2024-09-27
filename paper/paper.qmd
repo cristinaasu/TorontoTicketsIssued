@@ -5,9 +5,11 @@ thanks: "Code and data supporting this analysis is available at: https://github.
 date: today
 date-format: long
 abstract: "This paper analyzes Toronto’s ticket issuance data from 2018 to 2023 to uncover patterns in traffic enforcement across various offense categories and demographic groups. The analysis reveals that certain offense types (fix this), consistently result in higher ticket counts, with significant geographic concentrations in specific city divisions. Trends in ticket issuance by age group and year also show fluctuations, with noticeable increases in enforcement activity during certain periods. These findings offer valuable insights for guiding targeted law enforcement policies and improving the allocation of resources across the city."
-format: pdf
+toc: true
+fig_caption: yes
 number-sections: true
 bibliography: references.bib
+format: pdf
 ---
 
 ```{r}
@@ -23,21 +25,18 @@ library(ggmap)
 library(viridis)         
 library(grid)  
 library(gt)
-
+library(janitor)
 ```
 
 # Introduction
 
-Traffic violations play a significant role in shaping urban transportation systems, impacting both road safety and public behavior. In cities like Toronto, where traffic congestion and mobility issues are growing concerns, effective enforcement of traffic laws is essential to maintain order and safety. The issuance of tickets for violations such as speeding, distracted driving, and aggressive driving is a critical tool for law enforcement to manage these challenges. Understanding how these tickets are distributed across geographic areas and demographic groups can help policymakers ensure that enforcement is both fair and effective.
+As of 2021, around 1.107 million Toronto residents commuted by car, van, or truck, while 393,000 used public transport, underscoring the city's heavy reliance on vehicles for daily commuting [@statcan]. Given this large volume of vehicular traffic, ensuring road safety is crucial. Enhancing urban safety involves identifying patterns in traffic violations to target areas and groups with elevated incidents. This data-driven approach can provide the foundation for more effective educational campaigns and enforcement strategies. For instance, a study by Castillo-Manzano et al. demonstrated that the implementation of a points-based driver's license system and increased police monitoring in Spain significantly reduced traffic violations and road fatalities [@one], highlighting the potential for similar targeted interventions to improve road safety in Toronto.
 
-Recent studies suggest that specific offense types, such as speeding and distracted driving, contribute disproportionately to road safety hazards. While these violations are well-recognized, there is limited research on how the enforcement of these offenses is distributed across different city divisions or demographic groups. Ticket issuance data can provide insight into these trends, revealing whether certain areas or age groups are more likely to be ticketed. This information is vital for creating targeted strategies to address high-risk behaviors. Between 2011 and 2020, road safety in Canada improved in terms of overall rates of fatalities and serious injuries, but speeding (25%) and distracted driving (21%) remained leading contributors to fatal accidents in 2020【Cite: https://tc.canada.ca/en/road-transportation/publications/road-safety-canada-2020 】.
+In Ontario, traffic offenses are primarily regulated by the Highway Traffic Act (HTA), which was introduced in 1923. This provincial legislation classifies various traffic infractions and plays a critical role in maintaining road safety by setting out penalties and enforcement mechanisms, and such rules are still being followed by police officers in this dataset [@hta]. This study investigates traffic ticket enforcement trends from 2018 to 2023, a period that saw significant changes in driving behaviors due to factors such as the COVID-19 pandemic and the launch of targeted safety campaigns like "#MarchSafe" [@marchs] and "Speed Kills" [@speedk]. Using openly available data, this research aims to provide a comprehensive view of how enforcement efforts have adapted to shifts in public behavior and urban mobility. The analysis focuses on the spatial and demographic distribution of traffic tickets across the city, aiming to identify patterns that can inform targeted interventions and policy adjustments to enhance road safety.
 
-This paper focuses on ticket issuance data in Toronto from 2018 to 2023 to examine enforcement trends before and after the COVID-19 pandemic, which significantly impacted traffic volume, public behavior, and law enforcement activities. The analysis will examine offense categories, geographic distribution, and demographic patterns, uncovering key trends in ticket issuance across the city. This study identifies which types of offenses consistently result in higher ticket counts, examines their concentration in specific city divisions, and explores how age demographics influence enforcement. It also tracks yearly fluctuations to assess broader trends in enforcement over time【Cite: Studies on pandemic-related changes in urban traffic enforcement】.
-
-These findings provide valuable insights for guiding law enforcement strategies and resource allocation across Toronto. By identifying areas and demographic groups with higher rates of traffic violations, policymakers can implement more targeted interventions to improve traffic safety and ensure equitable enforcement practices. The paper is structured as follows: Section Two discusses the data and methodology, Section Three presents the findings, and Section Four explores the implications and suggests areas for further research.
+The findings reveal significant disparities in ticket issuance across Toronto's divisions, with certain neighborhoods and age groups consistently receiving higher numbers of tickets. Additionally, some divisions experienced dramatic increases in specific offenses, particularly speeding and distracted driving. This paper is structured as follows: Section Two discusses the data sources and methodology used. Section Three critically examines the data, comes to several conclusions, and proposes new areas of exploration of this dataset.
 
 # Data Analysis {#sec-data}
-
 
 ```{r}
 #| include: false
@@ -50,18 +49,13 @@ cleaned_tickets_data <- read_csv(
   show_col_types = FALSE
 )
 
-
 # Read GeoJSON data correctly
 cleaned_division_data <- st_read(here("data/analysis_data/cleaned_division_data.geojson"))
 ```
 
-To explore patterns of ticket issuance in Toronto from 2018 to 2023, comprehensive data were acquired from the Toronto Open Data catalogue using the OpenDataToronto R package (Gelfand 2022). This dataset is continually updated, with the latest records up to August 2nd, 2024, ensuring relevance and accuracy for this analysis.
+To examine ticket issuance patterns in Toronto from 2018 to 2023, recorded data on tickets issued [@ticketsdata] and Toronto Police divisions [@divisiondata] were acquired using the OpenDataToronto R package [@odt], which sources data from the Toronto Open Data Catalogue. The tickets issued dataset is updated annually, with the latest records dating up to August 2nd, 2024, ensuring that the analysis remains current and accurate. The Toronto Police divisions dataset was used solely for plotting geographic distributions in the mapping section of the analysis.
 
-The initial dataset comprised various entries which included data points categorized by division, offense year, ticket type, and demographic details. To refine and optimize the dataset for this analysis, entries with unspecified division locations marked as "NSA" (No Specified Address), which generally denote occurrences outside the jurisdictional bounds of Toronto or those without a confirmed location, were excluded. Similarly, entries under the "Unknown" category within the age group variable were also omitted to maintain the integrity and reliability of the demographic analysis. Post-cleanup, the dataset was reduced to 15,672 observations, all meticulously documented from 2018 through 2023.
-
-The statistical analysis was conducted using the R programming language, utilizing its powerful tidyverse suite (Wickham et al., 2019) for data manipulation and ggplot2 for visualization (Wickham, 2016). The key focus was to ascertain the distribution and variability of ticket issuance across different years and analyze demographic trends.
-
-The cleaned dataset revealed a total of 1,145,119 tickets issued over the six-year period, averaging 190,853.2 tickets per year. The standard deviation of 14,082.49 highlighted a notable variation in the number of tickets issued annually, suggesting influences of external factors or changes in enforcement intensity. This variability warranted a deeper exploration to understand annual trends and their implications on urban management and policy enforcement strategies.
+The datasets were cleaned using R [@citeR] and several of its packages: tidyverse [@tidyverse] for data manipulation, janitor [@janitor] for cleaning, and sf [@sf] for spatial analysis. To maintain data integrity, entries with unspecified division locations marked as "NSA" (No Specified Address) were excluded, as they generally denote occurrences outside the jurisdictional bounds of Toronto or those without a confirmed location. Additionally, entries categorized under "Unknown" within the age group variable were also omitted to enhance the reliability of demographic insights. After these adjustments, the tickets issued dataset was refined to include 15,672 observations; offence year, division, ticket type, offence category, tickets issued, and age group were made of interest for this analysis. A sample of the cleaned dataset is displayed in [@tbl-ticketissuedata]. For visual representation, the knitr [@knitr], kableExtra [@kableExtra], ggplot2 [@ggplot2], sf [@sf] packages were utilized to generate tables, graphs and map.
 
 ```{r}
 #| label: tbl-ticketissuedata
@@ -69,12 +63,8 @@ The cleaned dataset revealed a total of 1,145,119 tickets issued over the six-ye
 #| echo: false
 #| warning: false
 #| fig-align: center
-
-# Ref from: 
-# https://github.com/ThomasWilliamFox/toronto_child_care/blob/master/outputs/paper/toronto_child_care.qmd
-
 cleaned_tickets_data |>  
-  head(6) |> 
+  head(5) |> 
   kable( 
     col.names = c("Offence Year", "Division", "Ticket Type", 
                   "Offence Category", "Age Group", "Ticket Count"), 
@@ -82,10 +72,11 @@ cleaned_tickets_data |>
   )
 ```
 
+The [@tbl-meansdtickets] revealed a total of 1,145,119 tickets issued over a six-year period from 2018 to 2023, averaging 190,853 tickets annually with a standard deviation of 14,082. This variation suggests fluctuations in driving behaviors over time, perhaps influenced by changes in local regulations such as road safety campaigns.
 
 ```{r}
 #| label: tbl-meansdtickets
-#| tbl-cap: Summary Statistics for Ticket Issuance in Toronto from 2018-2023
+#| tbl-cap: Summary Statistics
 #| echo: false
 #| warning: false
 #| fig-align: center
@@ -109,7 +100,7 @@ std_dev_yearly_tickets <- cleaned_tickets_data %>%
 
 # Create summary table with formatted values
 summary_table <- data.frame(
-  `Summary Statistic` = c("Total Tickets Issued", 
+  `Statistic` = c("Total Tickets Issued", 
                 "Mean Tickets Issued per Year", 
                 "Standard Deviation of Yearly Tickets Issued"),
   Value = c(format(total_tickets, big.mark = ",", scientific = FALSE), 
@@ -117,127 +108,118 @@ summary_table <- data.frame(
             format(round(std_dev_yearly_tickets$sd, 2), big.mark = ",", scientific = FALSE))
 )
 
-# Print the summary table using kable
 kable(summary_table, format = "pipe")
-
 ```
 
 ## Offence Categories {#subsec1-data}
 
-Analysis of ticket categories reveals marked variations in enforcement across different offences. "Speeding" and "Other HTA" offences dominate ticket issuance, highlighting rigorous enforcement likely aimed at reducing high-speed incidents and enhancing road safety. Notably, the data shows that "Speeding" consistently incurs the highest number of tickets, underscoring its priority in traffic law enforcement agendas.
+[@fig-ticketcatg] highlights a significant distribution in the types of traffic tickets issued within Toronto. A substantial 93% of these tickets fall under Provincial Offence Notices - Part I (Pot), with the remaining 7% processed through Provincial Offence Summons Part III Form 104. This disparity underscores a law enforcement strategy that focuses on managing less severe infractions through notices, rather than escalating them to court summons.
 
-Conversely, tickets for "Distracted Driving" and "Aggressive Driving" are less frequent, which might suggest areas for increased enforcement. Given the dangerous nature of these offenses, particularly "Distracted Driving," which is increasingly problematic with the ubiquity of mobile devices, there may be an opportunity to intensify focus here. This could include more stringent monitoring techniques or public awareness campaigns targeting these specific behaviors.
+Among the offenses, as shown in [@fig-ticketyp], "Speeding" and "Other HTA" (Highway Traffic Act) violations are most frequently issued, constituting the majority of enforcement efforts. In contrast, tickets for "Distracted Driving" and "All CAIA" (Compulsory Automobile Insurance) are issued less frequently. For the reader's convenience, a brief guide on the differences between these ticket types and offense categories is provided in the Appendix.
 
-Tickets Type vs Tickets Issued
 ```{r}
-#| label: tbl-ticketcatg
-#| tbl-cap: Frequency of Ticket Categories
+#| label: fig-ticketcatg
+#| fig-cap: Distribution of Ticket Type
 #| echo: false
 #| warning: false
 #| fig-align: center
-# Bar chart of ticket categories and their frequencies
+#| layout-ncol: 1
 cleaned_tickets_data |>  
-  group_by(`Ticket Type`) |>          # Group by Ticket Type
-  summarize(total_tickets = sum(`Ticket Count`, na.rm = TRUE)) |>  # Sum the Ticket Count
-  ggplot(aes(x = `Ticket Type`, y = total_tickets)) +  # Use summed values for y-axis
-  geom_bar(stat = "identity", fill = "steelblue") +  # Use stat = "identity" to plot summed values
-  scale_y_continuous(labels = label_comma()) +  # Format y-axis labels with commas
-  theme_minimal() + 
+  group_by(`Ticket Type`) |>         
+  summarize(total_tickets = sum(`Ticket Count`, na.rm = TRUE)) |>  
+  ggplot(aes(x = `Ticket Type`, y = total_tickets)) + 
+  geom_bar(stat = "identity", position = "stack", fill = "steelblue") +  
+  scale_y_continuous(labels = label_comma()) +  
+  theme_classic() + 
   labs(x = "Ticket Type",
        y = "Total Count of Tickets") + 
-  theme(axis.text.x = element_text(hjust = 1))
+  theme(axis.text.y = element_text(size = 8))
 ```
 
-Offence Category vs Tickets Issued
-
 ```{r}
-#| label: tbl-offencebyticket
-#| tbl-cap: Stacked Bar Chart of Offence Categories by Ticket Type
+#| label: fig-ticketyp
+#| fig-cap: Distribution of Offences by Ticket Type
 #| echo: false
 #| warning: false
 #| fig-align: center
-# Stacked bar chart of Offence Category and Tickets Issued
-cleaned_tickets_data |>  
-  group_by(`Offence Category`, `Ticket Type`) |>  # Group by Offence Category and Ticket Type
-  summarize(total_tickets = sum(`Ticket Count`, na.rm = TRUE)) |>  # Sum the Ticket Count
-  ggplot(aes(x = `Offence Category`, y = total_tickets, fill = `Ticket Type`)) + 
-  geom_bar(stat = "identity", position = "stack") +  # Use stat = "identity" for totals
-  theme_minimal() + 
-  labs(x = "Count of Tickets", 
-       y = "Offence Category", 
-       fill = "Ticket Type") + 
-  coord_flip() +  # Flip the axes for a horizontal layout
-  theme(axis.text.y = element_text(angle = 0, hjust = 1)) +
-  scale_y_continuous(labels = scales::label_comma())  # Format y-axis labels with commas
+#| layout-ncol: 1
+cleaned_tickets_data %>%
+  group_by(`Offence Category`, `Ticket Type`) %>%
+  summarize(total_tickets = sum(`Ticket Count`, na.rm = TRUE), .groups = 'drop') %>%
+  ggplot(aes(x = `Offence Category`, y = total_tickets, fill = `Ticket Type`)) +  
+  geom_bar(stat = "identity", position = "dodge") +  
+  scale_fill_manual(values = c("Prov Offence Notice - Part I (Pot)" = "#FFE4B5", 
+                               "Prov Offence Summons Part III Form 104" = "#B2E0E0")) + 
+  labs(x = "Offence Category", y = "Count of Tickets", fill = "Ticket Type") +
+  theme_classic() +
+  theme(
+    axis.text.y = element_text(angle = 0, hjust = 1),
+    axis.text.x = element_text(angle = 25, hjust = 1),
+    legend.position = "top", 
+    legend.text = element_text(size = 9), 
+    legend.title = element_text(size = 9), 
+    legend.key.size = unit(0.5, "cm")
+  ) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  guides(fill = guide_legend(title = "Ticket Type"))
 ```
 
-Ticket Counts by Ticket Type (Doughnut Chart)
-```{r}
-#| label: tbl-ticketcount
-#| tbl-cap: Distribution of Tickets by Type
-#| echo: false
-#| warning: false
-#| fig-align: center
-# Summarize the ticket counts by ticket type
-ticket_type_summary <- cleaned_tickets_data |> 
-  group_by(`Ticket Type`) |> 
-  summarise(Total_Tickets = sum(`Ticket Count`)) |> 
-  ungroup() |> 
-  mutate(Percentage = Total_Tickets / sum(Total_Tickets) * 100) 
 
-# Create the doughnut chart
-ggplot(ticket_type_summary, aes(x = 2, y = Total_Tickets, fill = `Ticket Type`)) + 
-  geom_bar(stat = "identity", width = 1, color = "white") + 
-  coord_polar("y", start = 0) + 
-  theme_void() + 
-  geom_text(aes(label = paste0(scales::label_comma()(Total_Tickets), " (", round(Percentage, 1), "%)")),
-            position = position_stack(vjust = 0.5), color = "black") + 
-  scale_fill_brewer(palette = "Set3") + 
-  xlim(0.5, 2.5) 
-```
 ## Age Group {#subsec2-data}
-The data indicates a significant disparity in ticket issuance between adults and youths, with adults receiving the majority of tickets. This distribution likely mirrors the demographic composition of active drivers but also raises questions about the driving behavior between different age groups.
 
-An in-depth analysis into the types of offenses by age group could unveil targeted opportunities for intervention. Educational programs, especially for new drivers, could be crucial in instilling good driving habits early. Additionally, exploring the impact of graduated licensing could yield insights into its effectiveness in mitigating youth-related traffic violations.
+Under the guidelines of the Toronto Police Service, an individual aged 18 or above is classified as an adult [@policereport]. As of March 2022, only 1.86% of licensed drivers in Ontario are categorized as youths, reflecting their minimal representation on the roads [@driversreport]. While this analysis spans from 2018 to 2023, we can infer that the youth population has likely remained consistent over the past five years, as growth in the number of licensed youths may not significantly alter this disparity.
+
+Consequently, it is expected that ticket issuance statistics would similarly reflect a significant difference between the two groups. Indeed, there is a marked difference in ticket issuance in [@fig-age], with adults receiving the vast majority---1,138,393 tickets, or 99.4% of the total issued across all offense categories---correlating with their more frequent interactions with traffic enforcement.
 
 ```{r}
-#| label: tbl-age
-#| tbl-cap: Stacked Bar Chart of Offence Categories by Age Group
+#| label: fig-age
+#| fig-cap: Distribution of Offences by Age Group
 #| echo: false
 #| warning: false
 #| fig-align: center
-# Stacked bar chart of Offence Category and Tickets Issued by Age Group
-cleaned_tickets_data |> 
-  group_by(`Offence Category`, `Age Group`) |>  # Group by Offence Category and Age Group
-  summarize(total_tickets = sum(`Ticket Count`, na.rm = TRUE)) |>  # Sum the Ticket Count
-  ggplot(aes(x = `Offence Category`, y = total_tickets, fill = `Age Group`)) + 
-  geom_bar(stat = "identity", position = "stack") +  # Use stat = "identity" for totals
-  theme_minimal() + 
-  labs(x = "Count of Tickets", 
-       y = "Offence Category", 
-       fill = "Age Group") + 
-  coord_flip() +  # Flip the axes for a horizontal layout
-  theme(axis.text.y = element_text(angle = 0, hjust = 1)) +
-  scale_y_continuous(labels = scales::label_comma())  # Format y-axis labels with commas
-```
-## 2.3 Yearly Patterns {#subsec3-data}
-Reviewing ticket issuance over several years shows fluctuations, with a noticeable peak in 2023. Such variations could reflect changes in enforcement intensity, alterations in traffic laws, or broader socio-economic trends affecting driving patterns.
+total_tickets_by_age_group <- cleaned_tickets_data %>%
+  filter(`Age Group` %in% c("Adult", "Youth")) %>% 
+  group_by(`Age Group`) %>% 
+  summarize(total_tickets = sum(`Ticket Count`, na.rm = TRUE))
 
-Examining the influence of policy changes, economic factors, or even public events could explain some of the annual variations observed. This could be particularly relevant for understanding the impact of global events like the COVID-19 pandemic on traffic patterns and enforcement.
+cleaned_tickets_data %>% 
+  group_by(`Offence Category`, `Age Group`) %>% 
+  summarize(total_tickets = sum(`Ticket Count`, na.rm = TRUE), .groups = "drop") %>% 
+  ggplot(aes(x = `Offence Category`, y = total_tickets, fill = `Age Group`)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_manual(values = c("Adult" =  "#FFE4B5", "Youth" =  "#B2E0E0")) +
+  theme_classic() +
+  labs(x = "Offence Category", y = "Count of Tickets", fill = "Age Group") +
+  theme(axis.text.y = element_text(angle = 0, hjust = 1),
+        axis.text.x = element_text(angle = 25, hjust = 1),
+        legend.position = "top") +
+  scale_y_continuous(labels = scales::label_comma())
+```
+
+## Yearly Patterns {#subsec3-data}
+
+To analyze changes in traffic ticket issuance from 2018 to 2023, data was compiled into [@tbl-yearlyp] and visually represented in [@fig-yearlyp], illustrating trends across various offense categories. Each line in [@fig-yearlyp] is color coded to correspond with different offenses, facilitating easy comparison.
+
+Speeding tickets peaked in 2021 with 83,742 issued, before declining to 63,630 by 2023, a decrease of 24%. This significant drop is clearly depicted with a pronounced downward trajectory, reflecting a reduction in these offenses. Conversely, Other HTA violations recorded the largest increase, surging by 47% from 46,356 in 2022 to 68,146 in 2023. Aggressive Driving shows a similar trend but with less magnitude, peaking at 52,779 tickets in 2023. The categories of All CAIA and Distracted Driving showed more moderate changes. Notably, Distracted Driving tickets increased steadily, rising 18% from 8,332 in 2018 to 9,825 in 2023. These trends align with earlier findings in [@fig-offencebyticket] from Section 2.1, where Speeding and Other HTA offenses were highlighted for having a higher incidence of tickets issued.
+
+Overall, the total number of tickets issued saw a significant 15% increase from 2019 to 2020, likely influenced by changes in enforcement strategies or public behavior during the COVID-19 pandemic. The upward trend continued with a 17% increase from 2022 to 2023, resulting in a total of 212,840 tickets, indicative of a rebound in traffic volumes and enforcement activities as pandemic related restrictions were lifted. 
 
 ```{r}
 #| label: tbl-yearlyp
-#| tbl-cap: Ticket Counts by Offence Category and Year
+#| tbl-cap: Tickets Issued by Category and Year
 #| echo: false
 #| warning: false
 #| fig-align: center
+# Assuming 'cleaned_tickets_data' is already your cleaned dataset
 ticket_counts <- cleaned_tickets_data %>%
   group_by(`Offence Category`, `Offence Year`) %>%
   summarize(`Ticket Count` = sum(`Ticket Count`), .groups = 'drop')
 
 # Convert your data into a wider format
 ticket_counts_wide <- ticket_counts %>%
-  pivot_wider(names_from = `Offence Year`, values_from = `Ticket Count`, values_fill = list(`Ticket Count` = 0))
+  pivot_wider(names_from = `Offence Year`, 
+              values_from = `Ticket Count`, 
+              values_fill = list(`Ticket Count` = 0))
 
 # Calculate totals for each year
 totals <- ticket_counts_wide %>%
@@ -247,43 +229,57 @@ totals <- ticket_counts_wide %>%
 # Append the totals row
 ticket_counts_wide <- bind_rows(ticket_counts_wide, totals)
 
-# Create the table using gt
-ticket_table <- gt(ticket_counts_wide) %>%
-  cols_label(
-    `2018` = "2018",
-    `2019` = "2019",
-    `2020` = "2020",
-    `2021` = "2021",
-    `2022` = "2022",
-    `2023` = "2023"
-  ) %>%
-  tab_header(
-    title = "Tickets",
-    subtitle = "Tickets Issued by Category and Year"
-  ) %>%
-  fmt_number(
-    columns = vars(`2018`, `2019`, `2020`, `2021`, `2022`, `2023`),
-    decimals = 0
-  ) %>%
-  tab_options(
-    table.width = pct(100),
-    column_labels.font.size = "small"
+# Use knitr::kable to create a well-formatted table
+knitr::kable(ticket_counts_wide) 
+```
+
+```{r}
+#| label: fig-yearlyp
+#| fig-cap: Ticket Issued by Offence Category and Year
+#| echo: false
+#| warning: false
+#| fig-align: center
+# Convert wide format back to long for ggplot
+ticket_counts_long <- ticket_counts_wide %>%
+  pivot_longer(
+    cols = -`Offence Category`, 
+    names_to = "Year", 
+    values_to = "Tickets Issued"
   )
 
-# View the table
-print(ticket_table)
+# Remove the total row for plotting individual categories
+ticket_counts_long <- ticket_counts_long %>%
+  filter(`Offence Category` != "Total")
 
+# Create the line graph
+ggplot(ticket_counts_long, aes(x = Year, y = `Tickets Issued`, color = `Offence Category`, group = `Offence Category`)) +
+  geom_line() +  
+  geom_point() + 
+  labs(title = "Annual Tickets Issued by Offence Category",
+       x = "Year",
+       y = "Number of Tickets Issued",
+       color = "Offence Category") +
+  theme_classic() + 
+  theme(
+    axis.text.x = element_text(hjust = 0.5, size = 12), 
+    axis.title.x = element_text(size = 12), 
+    axis.title.y = element_text(size = 12),
+    plot.title = element_text(size = 12, hjust = 0.5), 
+    legend.text = element_text(size = 6),
+    legend.title = element_text(size = 8), 
+    legend.key.size = unit(0.5, "cm")
+  )
 ```
 
 ## Geographic Distribution {#subsec4-data}
 
-Ticket distribution by geographic division highlights areas with varied enforcement levels. The highest concentrations of tickets in divisions D41, D55, and D14 suggest that these areas could be high traffic zones or regions with higher incidences of traffic violations. This distribution may reflect strategic placement of traffic law enforcement resources in areas perceived as high-risk.
+To assess the geographic distribution of traffic ticket issuance across Toronto, [@fig-map] and [@tbl-map] provide detailed insights into how tickets are dispersed among various police divisions, highlighting areas with the highest enforcement activities. Figure 3, using color gradients, visually emphasizes divisions D14, D41, D42, and D55, where ticket issuance is most concentrated, with green to blue tones indicating higher frequencies of tickets.
 
-Further analysis could correlate high ticket areas with external factors such as traffic volume, accident rates, or demographic data. Understanding these correlations can help in optimizing resource allocation, ensuring that enforcement efforts are both effective and efficient.
+Table 2 details the breakdown of tickets in these divisions, showing D55 with the highest count at 99,065, primarily in Speeding and Other HTA offenses. D14, with a total of 98,307 tickets, shows a comparative decrease in Speeding offenses by 18% relative to D55. D41 and D42, meanwhile, exhibit similar ticket distribution profiles, pointing to consistent enforcement approaches or similar driver behaviors in these regions.
 
 ```{r}
-#| label: tbl-map
-#| tbl-cap: Total Tickets Issued by Division
+#| label: fig-map
+#| fig-cap: Map of Total Tickets Issued by Division
 #| echo: false
 #| warning: false
 #| message: false
@@ -304,7 +300,8 @@ ggplot(data = division_with_tickets) +
                size = 2, color = "black") +  
   scale_fill_gradientn(colors = c("#FFCCCB", "#FFDDC1", "#FFE4B5", "#D3FFCE", "#B2E0E0"),
                        labels = scales::comma) +  
-  labs(fill = "Total Tickets") +   
+  labs(title = "Total Tickets Issued by Division",
+       fill = "Total Tickets") +   
   theme_minimal() +  
   theme( 
     plot.title = element_text(hjust = 0.5),  
@@ -322,29 +319,57 @@ ggplot(data = division_with_tickets) +
   )
 ```
 
-# Discussion {#sec-discussion}
-## Results and Implications {#subsec1-discussion}
-This study highlights the complexity and challenges of traffic law enforcement in a major urban center. The predominance of speeding and other HTA offenses suggests that while enforcement measures are effective in capturing these violations, ongoing issues persist that require continuous effort and adaptation of strategies.
+```{r}
+#| label: tbl-map
+#| tbl-cap: Tickets Issued by Division and Offence Category
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-align: center
+# Filter for specific divisions
+selected_divisions <- cleaned_tickets_data %>%
+  filter(Division %in% c("D14", "D55", "D41", "D42"))
 
-Implications: Enhancing enforcement for less frequently ticketed but highly risky behaviors such as distracted and aggressive driving could further improve road safety. Also, differential enforcement strategies considering the unique characteristics of each division may lead to more efficient use of resources and greater compliance with traffic laws.
+# Create a summary table
+summary_table <- selected_divisions %>%
+  group_by(Division, `Offence Category`) %>%
+  summarize(`Tickets Issued` = sum(`Ticket Count`, na.rm = TRUE), .groups = "drop")
+
+# Reshape the dataset to a wide format
+wide_format_table <- summary_table %>%
+  pivot_wider(
+    names_from = `Offence Category`, 
+    values_from = `Tickets Issued`,
+    values_fill = list(`Tickets Issued` = 0)
+  )
+
+# Add a total column for each division
+wide_format_table <- wide_format_table %>%
+  rowwise() %>%
+  mutate(Total = sum(c(`Aggressive Driving`, `All CAIA`, `Distracted Driving`, `Other HTA`, `Speeding`), na.rm = TRUE)) %>%
+  ungroup()
+
+knitr::kable(wide_format_table)
+```
+
+# Discussion {#sec-discussion}
+
+## Results and Implications {#subsec1-discussion}
+
+The analysis of traffic ticket issuance in Toronto from 2018 to 2023 reveals key enforcement patterns and highlights areas for targeted policy interventions. Divisions D55, D42, D41, and D14 consistently recorded the highest numbers of traffic tickets, particularly for Speeding and Other Highway Traffic Act (HTA) offenses. These findings suggest a need for increased patrols and advanced monitoring technologies in these divisions to address high rates of violations and improve road safety.
+
+A notable increase in tickets issued between 2019 and 2020 is surprising, given the expectation that the pandemic would lead to fewer violations. However, speeding offenses saw a rise, possibly due to lower traffic volumes and fewer pedestrians, which may have encouraged higher speeds on less congested roads. Speeding remains a significant public safety concern, with the Toronto Police emphasizing the direct link between speed and the severity of injuries: "Drivers who speed, drive distracted or aggressively cause collisions—but it's speed that directly impacts the severity of injury" [@citynews]. While targeted safety campaigns like "#MarchSafe" and "Speed Kills" in 2022 initially had some impact, overall ticket counts for that year were lower than in previous years, likely due to pandemic-related reductions in traffic volumes.
+
+The demographic analysis revealed that only 0.6% of tickets were issued to the youth demographic, consistent with the relatively small proportion of young drivers on Toronto’s roads. The vast majority of tickets were issued to adults, particularly for high-risk behaviors such as speeding and distracted driving. This highlights the need for targeted educational programs specifically aimed at adult drivers to address these risk factors. Additionally, most tickets were issued under Provincial Offence Notices - Part I (Pot), reflecting an enforcement strategy focused on efficiently managing minor infractions without escalating them to court summons.
+
+In summary, these findings underscore the need to adapt enforcement strategies to address both the geographic concentration of violations and the behavioral patterns of adult drivers. By increasing patrols in high-violation areas and implementing educational campaigns targeting adult drivers, Toronto can enhance road safety citywide, particularly as traffic volumes normalize post-pandemic.
 
 ## Further Areas of Exploration {#subsec2-discussion}
-The initial findings suggest several avenues for deeper investigation. Analyzing the causes for the geographic and demographic patterns in ticket issuance could provide insights into underlying factors influencing these trends.
 
-Suggestions: Integrating data on traffic flow and vehicle density with ticket issuance could offer a more comprehensive understanding of the effectiveness of current traffic law enforcement strategies. Additionally, employing advanced analytical techniques, such as predictive analytics or machine learning, could forecast trends and inform proactive traffic management strategies.
+Future analyses could be expanded by incorporating more detailed data on the specific locations within Toronto’s divisions where traffic violations are most frequently issued. This would allow for a more granular understanding of the factors contributing to higher violation rates in certain neighborhoods or intersections, enabling targeted interventions. Additionally, exploring temporal factors, such as time of day or seasonality, could provide insights into when traffic offenses are most likely to occur, helping law enforcement allocate resources more effectively during high-risk periods.
 
-This paper offers a foundational exploration into the patterns of ticket issuance within Toronto, providing a base from which policymakers and researchers can further investigate and improve traffic law enforcement strategies. By continuing to analyze these patterns and their broader implications, strategic improvements can be formulated to enhance both compliance and overall road safety across the city.
+Moreover, with additional data on driver behaviors or vehicle types involved in violations, future studies could analyze whether certain demographics or types of vehicles are overrepresented in specific traffic offenses. This information could further inform public education campaigns or targeted enforcement strategies, ensuring that interventions are not only geographically but also demographically appropriate. Employing more advanced spatial analysis tools and machine learning techniques could also help in predicting high-risk areas or times, optimizing road safety efforts citywide.
 
-This expanded discussion provides a thorough analysis of your data, ensuring each section of the paper is robustly supported by the visualizations and the underlying data you've provided.
-
-
-
-\newpage
-
-\appendix
-
-# Appendix {.unnumbered}
-
-
+# Appendix
 
 # References
