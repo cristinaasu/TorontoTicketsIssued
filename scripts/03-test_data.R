@@ -15,7 +15,7 @@ library(dplyr)
 
 # Test for the correct number of rows
 num_rows <- nrow(cleaned_tickets_data)
-expected_rows <- 15162
+expected_rows <- 15672
 if (num_rows != expected_rows) {
   print(paste("Number of entries is incorrect. Expected:", expected_rows, "but got:", num_rows))
 }
@@ -23,11 +23,11 @@ if (num_rows != expected_rows) {
 # Test for valid offence_year values
 valid_years <- 2018:2023 
 if (any(!(cleaned_tickets_data$`Offence Year` %in% valid_years))) {
-  print("There are invalid offence_year values outside the expected range (2019-2023).")
+  print("There are invalid offence_year values outside the expected range (2018-2023).")
 }
 
 # Test for valid divisions
-valid_divisions <- c("NSA", "D42", "D22", "D11", "D41", "D53", "D31", "D43", 
+valid_divisions <- c("D42", "D22", "D11", "D41", "D53", "D31", "D43", 
                      "D23", "D52", "D32", "D12", "D55", "D51", "D33", "D14", 
                      "D13")
 if (any(!(cleaned_tickets_data$Division %in% valid_divisions))) {
@@ -42,7 +42,7 @@ if (any(!(cleaned_tickets_data$`Ticket Type` %in% valid_ticket_types))) {
 }
 
 # Test for age_group values
-valid_age_groups <- c("Adult", "Youth", "Unknown")
+valid_age_groups <- c("Adult", "Youth")
 if (any(!(cleaned_tickets_data$`Age Group` %in% valid_age_groups))) {
   print("There are invalid age_group values.")
 }
@@ -67,7 +67,7 @@ if (!is.numeric(cleaned_tickets_data$`Ticket Count`)) {
 
 # Test for the correct number of rows
 num_division_rows <- nrow(cleaned_division_data)
-expected_division_rows <- 16  # Replace with the expected number of rows
+expected_division_rows <- 16 
 if (num_division_rows != expected_division_rows) {
   print(paste("Number of entries in division data is incorrect. Expected:", 
               expected_division_rows, "but got:", num_division_rows))

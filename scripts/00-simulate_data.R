@@ -70,7 +70,7 @@ stopifnot(all(simulated_data$ticket_type %in% expected_ticket_types))
 stopifnot(nrow(simulated_data) == nrow(distinct(simulated_data)))
 
 # Test 5: Ensure all age groups are correct
-expected_age_groups <- c("Adult", "Young")
+expected_age_groups <- c("Adult", "Youth")
 stopifnot(all(simulated_data$age_group %in% expected_age_groups))
 
 # Test 6: Ensure all offence categories are correct

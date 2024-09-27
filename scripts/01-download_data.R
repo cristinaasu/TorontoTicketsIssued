@@ -28,7 +28,7 @@ raw_division_data <- list_package_resources("police-boundaries") |>
 
 #### Save data ####
 write_csv(raw_tickets_data, "data/raw_data/raw_tickets_data.csv") 
-st_write(raw_division_data, geojson_path)
+st_write(raw_division_data, "data/raw_data/raw_division_data.geojson")
 
 
          
