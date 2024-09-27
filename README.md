@@ -8,13 +8,21 @@ This paper attempts to identifying patterns in traffic violations to target area
 
 The repository is structured as follows:
 
-data/raw_data contains the data sources used in analysis including the raw data. data/analysis_data contains the cleaned dataset that was constructed. other/llm contains the chat history with Chat-GPT4.0. other/sketches contains the original sketches (ie. graph, tables) made of the data. paper contains the files used to generate the paper, including the Quarto document, reference bibliography file, as well as the PDF of the paper. scripts contains the R scripts used to simulate, download and clean data.
+- **data/raw_data** contains the data sources used in analysis including the raw data. 
+- **data/analysis_data** contains the cleaned dataset that was constructed. 
+- **other/llm contains** the chat history with Chat-GPT4.0. 
+- **other/sketches** contains the original sketches (ie. graph, tables) made of the data. 
+- **paper contains** the files used to generate the paper, including the Quarto document, reference bibliography file, as well as the PDF of the paper. 
+- **scripts** contains the R scripts used to simulate, download and clean data.
 
 ## Reproducing Graphs and Tables
 
 Here is a quick guide to reproducing my graphs and tables.
 
-Clone this repository to your computer Download the data from OpenDataToronto using scripts/01-download_data.R Clean it using 02-data_cleaning.R Open TorontoTicketsIssued/paper/paper.qmd to test the R code that generated my plots.
+1. Clone this repository to your computer.
+2. Download the data from OpenDataToronto using scripts/01-download_data.R 
+3. Clean it using 02-data_cleaning.R 
+4. Open TorontoTicketsIssued/paper/paper.qmd to test the R code that generated my plots.
 
 ## LLM Usage
 
