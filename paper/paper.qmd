@@ -24,7 +24,6 @@ library(sf)
 library(ggmap)           
 library(viridis)         
 library(grid)  
-library(gt)
 library(janitor)
 ```
 
