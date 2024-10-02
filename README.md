@@ -10,9 +10,9 @@ The repository is structured as follows:
 
 - `data/raw_data` contains the data sources used in analysis including the raw data. 
 - `data/analysis_data` contains the cleaned dataset that was constructed. 
-- `other/llm contains` the chat history with Chat-GPT4.0. 
+- `other/llm` contains the chat history with Chat-GPT4.0. 
 - `other/sketches` contains the original sketches (ie. graph, tables) made of the data. 
-- `paper contains` the files used to generate the paper, including the Quarto document, reference bibliography file, as well as the PDF of the paper. 
+- `paper` contains the files used to generate the paper, including the Quarto document, reference bibliography file, as well as the PDF of the paper. 
 - `scripts` contains the R scripts used to simulate, download and clean data.
 
 ## Reproducing Graphs and Tables
